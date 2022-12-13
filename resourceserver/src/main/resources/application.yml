@@ -1,0 +1,23 @@
+server:
+  port: 8080
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: springboot-microservice
+            client-secret: L7CYws3HULROIAsA4aSwssvZZrS9iz10
+      resourceserver:
+        jwt:
+          issuer-uri: http://@keycloak.host@:8091/realms/Demo-Realm
+          jwk-set-uri: http://@keycloak.host@:8091/realms/Demo-Realm/protocol/openid-connect/certs
+springdoc:
+  api-docs:
+    path: /api/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+  oAuthFlow:
+    authorizationUrl: http://@keycloak.host@:8091/realms/Demo-Realm/protocol/openid-connect/auth
+    tokenUrl: http://@keycloak.host@:8091/realms/Demo-Realm/protocol/openid-connect/token
