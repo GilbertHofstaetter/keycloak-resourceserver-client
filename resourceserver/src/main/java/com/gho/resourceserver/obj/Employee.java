@@ -14,9 +14,9 @@ import java.util.Date;
 //@Setter
 //@ToString
 @NoArgsConstructor
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
+//@JsonIdentityInfo(
+//        generator = ObjectIdGenerators.PropertyGenerator.class,
+//        property = "id")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Employee {
 

@@ -21,56 +21,148 @@
 
   <dependencies>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.11</version>
-      <scope>test</scope>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-oauth2-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.keycloak</groupId>
+      <artifactId>keycloak-admin-client</artifactId>
+      <version>20.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openapitools</groupId>
+      <artifactId>jackson-databind-nullable</artifactId>
+      <version>0.2.1</version>
+    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>io.springfox</groupId>-->
+<!--      <artifactId>springfox-swagger2</artifactId>-->
+<!--      <version>2.9.2</version>-->
+<!--    </dependency>-->
+    <dependency>
+      <groupId>io.swagger.core.v3</groupId>
+      <artifactId>swagger-annotations</artifactId>
+      <version>2.2.2</version>
+      <scope>compile</scope>
     </dependency>
   </dependencies>
 
+  <profiles>
+    <profile>
+      <id>dev</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <keycloak.host>localhost</keycloak.host>
+      </properties>
+    </profile>
+    <profile>
+      <id>docker-keycloak</id>
+      <properties>
+        <keycloak.host>keycloak</keycloak.host>
+      </properties>
+    </profile>
+    <profile>
+      <id>production</id>
+      <properties>
+        <keycloak.host>localhost</keycloak.host>
+      </properties>
+    </profile>
+  </profiles>
+
   <build>
-    <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
+<!--    <pluginManagement>&lt;!&ndash; lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) &ndash;&gt;-->
       <plugins>
         <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
+<!--        <plugin>-->
+<!--          <artifactId>maven-clean-plugin</artifactId>-->
+<!--          <version>3.1.0</version>-->
+<!--        </plugin>-->
+<!--        &lt;!&ndash; default lifecycle, jar packaging: see https://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging &ndash;&gt;-->
+<!--        <plugin>-->
+<!--          <artifactId>maven-resources-plugin</artifactId>-->
+<!--          <version>3.0.2</version>-->
+<!--        </plugin>-->
+<!--        <plugin>-->
+<!--          <artifactId>maven-compiler-plugin</artifactId>-->
+<!--          <version>3.8.0</version>-->
+<!--        </plugin>-->
+<!--        <plugin>-->
+<!--          <artifactId>maven-surefire-plugin</artifactId>-->
+<!--          <version>2.22.1</version>-->
+<!--        </plugin>-->
+<!--        <plugin>-->
+<!--          <artifactId>maven-jar-plugin</artifactId>-->
+<!--          <version>3.0.2</version>-->
+<!--        </plugin>-->
+<!--        <plugin>-->
+<!--          <artifactId>maven-install-plugin</artifactId>-->
+<!--          <version>2.5.2</version>-->
+<!--        </plugin>-->
+<!--        <plugin>-->
+<!--          <artifactId>maven-deploy-plugin</artifactId>-->
+<!--          <version>2.8.2</version>-->
+<!--        </plugin>-->
+<!--        &lt;!&ndash; site lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#site_Lifecycle &ndash;&gt;-->
+<!--        <plugin>-->
+<!--          <artifactId>maven-site-plugin</artifactId>-->
+<!--          <version>3.7.1</version>-->
+<!--        </plugin>-->
+<!--        <plugin>-->
+<!--          <artifactId>maven-project-info-reports-plugin</artifactId>-->
+<!--          <version>3.0.0</version>-->
+<!--        </plugin>-->
         <plugin>
-          <artifactId>maven-clean-plugin</artifactId>
-          <version>3.1.0</version>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-maven-plugin</artifactId>
+          <configuration>
+            <excludes>
+              <exclude>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+              </exclude>
+            </excludes>
+          </configuration>
         </plugin>
-        <!-- default lifecycle, jar packaging: see https://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
         <plugin>
-          <artifactId>maven-resources-plugin</artifactId>
-          <version>3.0.2</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.8.0</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.22.1</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>3.0.2</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-install-plugin</artifactId>
-          <version>2.5.2</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-deploy-plugin</artifactId>
-          <version>2.8.2</version>
-        </plugin>
-        <!-- site lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#site_Lifecycle -->
-        <plugin>
-          <artifactId>maven-site-plugin</artifactId>
-          <version>3.7.1</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-project-info-reports-plugin</artifactId>
-          <version>3.0.0</version>
+          <!-- This 2019 version is required for OpenAPI 3 -->
+          <groupId>io.swagger.codegen.v3</groupId>
+          <artifactId>swagger-codegen-maven-plugin</artifactId>
+          <version>3.0.8</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>generate</goal>
+              </goals>
+              <configuration>
+                <inputSpec>${project.basedir}/src/main/resources/resource-server-api-docs.json</inputSpec>
+                <language>java</language>
+                <generateApiTests>false</generateApiTests>
+                <generateModelTests>false</generateModelTests>
+                <packageName>com.gho.client.clientApi</packageName>
+                <modelPackage>com.gho.client.clientApi.model</modelPackage>
+                <apiPackage>com.gho.client.clientApi.api</apiPackage>
+                <invokerPackage>com.gho.client.clientApi.invoker</invokerPackage>
+                <configOptions>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>${project.artifactId}</artifactId>
+                  <artifactVersion>${project.version}</artifactVersion>
+                  <library>resttemplate</library>
+                  <java8>true</java8>
+                  <dateLibrary>java8</dateLibrary>
+                  <licenseName>Apache 2.0</licenseName>
+                  <licenseUrl>https://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+                </configOptions>
+              </configuration>
+            </execution>
+          </executions>
         </plugin>
       </plugins>
-    </pluginManagement>
+<!--    </pluginManagement>-->
   </build>
 </project>
