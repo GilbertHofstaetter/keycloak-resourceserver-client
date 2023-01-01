@@ -16,6 +16,7 @@ spring:
           keycloak:
             issuer-uri: http://@keycloak.host@:8091/realms/Demo-Realm
       resourceserver:
+        basePath: @resourceserver.host@
         jwt:
           issuer-uri: http://@keycloak.host@:8091/realms/Demo-Realm
           jwk-set-uri: http://@keycloak.host@:8091/realms/Demo-Realm/protocol/openid-connect/certs

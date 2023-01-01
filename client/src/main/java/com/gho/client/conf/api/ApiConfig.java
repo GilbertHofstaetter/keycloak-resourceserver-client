@@ -4,6 +4,7 @@ import com.gho.client.clientApi.api.CompanyControllerApi;
 import com.gho.client.clientApi.api.EmployeeControllerApi;
 import com.gho.client.clientApi.invoker.auth.OAuth;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -19,6 +20,9 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 @Configuration
 public class ApiConfig {
+
+    @Value("${spring.security.oauth2.resourceserver.basePath}")
+    private String resourceServerBasePath; //=client id
 
     @Bean
     @RequestScope
@@ -56,6 +60,7 @@ public class ApiConfig {
     @Qualifier("openApiClient")
     public com.gho.client.clientApi.invoker.ApiClient openApiClient(AccessToken accessToken) {
         com.gho.client.clientApi.invoker.ApiClient apiClient = new com.gho.client.clientApi.invoker.ApiClient();
+        apiClient.setBasePath(resourceServerBasePath);
         OAuth oAuth = (OAuth) apiClient.getAuthentication("keycloak");
         oAuth.setAccessToken(accessToken.getAccessToken());
         return apiClient;

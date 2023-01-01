@@ -59,12 +59,14 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
+                <resourceserver.host>http://localhost:8080</resourceserver.host>
                 <keycloak.host>localhost</keycloak.host>
             </properties>
         </profile>
         <profile>
             <id>docker-keycloak</id>
             <properties>
+                <resourceserver.host>http://resourceserver:8080</resourceserver.host>
                 <keycloak.host>keycloak</keycloak.host>
             </properties>
         </profile>
